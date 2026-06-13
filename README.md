@@ -3,10 +3,10 @@
 Este projeto automatiza o site de testes **https://www.automationexercise.com/** usando **Cypress** e **BDD/Cucumber**.
 
 A solução final traz:
-- cenários de teste em **`.feature`**
-- definições de passos em **step definitions**
-- objetos de página em **Page Object Model (POM)**
-- configuração de **Cypress + Cucumber + esbuild** para execução correta
+- cenários de teste em **`.feature`** no **`cypress/e2e/web/`**
+- definições de passos em **step definitions** em **`cypress/support/step_definitions/AutomationExerciseSteps.js`**
+- Locators da página em **Page Object Model (POM)** em **`cypress/pages/AutomationExercisePage.js`**
+- configuração de **Cypress + Cucumber + esbuild** no **`cypress.config.js`** para execução correta
 
 ---
 
@@ -22,7 +22,7 @@ A solução final traz:
 ### Arquivos principais
 - **`cypress/e2e/web/AutomationExercise.cy.feature`**
   - cenário BDD em português para o fluxo completo.
-- **`cypress/support/step_definitions/index.js`**
+- **`cypress/support/step_definitions/AutomationExerciseSteps.js`**
   - implementa os passos `Given`, `When`, `Then` usados pelo `.feature`.
 - **`cypress/pages/AutomationExercisePage.js`**
   - Page Object com locators e métodos reutilizáveis para a aplicação.
@@ -37,7 +37,7 @@ A solução final traz:
 
 1. O arquivo **`.feature`** descreve o cenário de forma legível.
 2. O Cypress usa o plugin **@badeball/cypress-cucumber-preprocessor** para transformar o Gherkin em testes.
-3. O arquivo **`step_definitions/index.js`** mapeia cada passo para código Cypress.
+3. O arquivo **`step_definitions/AutomationExerciseSteps.js`** mapeia cada passo para código Cypress.
 4. O Page Object separa os seletores e ações em **`cypress/pages/AutomationExercisePage.js`**.
 
 ---
