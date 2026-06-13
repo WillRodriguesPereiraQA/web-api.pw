@@ -19,17 +19,16 @@ module.exports = defineConfig({
   e2e: {
     setupNodeEvents: setupPlugins,
     // Alterado: Foca apenas em arquivos .feature como specs válidas
-    specPattern: 'cypress/e2e/**/*.feature',
+    specPattern: ['cypress/e2e/**/*.feature', 'cypress/e2e/**/*.cy.{js,ts}'],
     // Mantemos `baseUrl` para compatibilidade, mas recomendando uso de `env.webBaseUrl` e `env.apiBaseUrl`
     baseUrl: process.env.WEB_BASE_URL || 'https://www.automationexercise.com/',
-    pageLoadTimeout: 180000,
-    defaultCommandTimeout: 30000,
-    requestTimeout: 60000,
+    pageLoadTimeout: 45000,
+    defaultCommandTimeout: 8000,
+    requestTimeout: 15000,
     retries: {
       runMode: 1,
       openMode: 0,
     },
-    // CORREÇÃO AQUI: O mapeamento de passos deve ficar dentro do bloco env
     env: {
       // URLs separados para web e api. Use `Cypress.env('webBaseUrl')` e `Cypress.env('apiBaseUrl')` nos testes.
       webBaseUrl: process.env.WEB_BASE_URL || 'https://www.automationexercise.com/',
