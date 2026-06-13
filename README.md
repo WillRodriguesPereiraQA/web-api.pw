@@ -1,35 +1,48 @@
-# 🚀 Automação Web com Cypress + BDD para AutomationExercise
+# 🚀 Automação Web e API com Cypress + BDD
 
-Este projeto automatiza o site de testes **https://www.automationexercise.com/** usando **Cypress** e **BDD/Cucumber**.
+Este projeto automatiza testes **web** e **API** usando **Cypress** e **BDD/Cucumber**.
 
-A solução final traz:
-- cenários de teste em **`.feature`** no **`cypress/e2e/web/`**
-- definições de passos em **step definitions** em **`cypress/support/step_definitions/AutomationExerciseSteps.js`**
-- Locators da página em **Page Object Model (POM)** em **`cypress/pages/AutomationExercisePage.js`**
-- configuração de **Cypress + Cucumber + esbuild** no **`cypress.config.js`** para execução correta
+A solução traz:
+- cenários web em **`.feature`** no **`cypress/e2e/web/`**
+- cenários API em **`.feature`** no **`cypress/e2e/api/`**
+- definições de passos em **`cypress/support/step_definitions/`**
+- Page Object (POM) em **`cypress/support/pages/AutomationExercisePage.js`**
+- API object em **`cypress/support/api - objects/TrelloApiObject.js`**
+- configuração de **Cypress + Cucumber + esbuild** no **`cypress.config.js`**
 
 ---
 
-## 🌐 Site alvo
+## 🎯 Escopo dos testes
 
+### Web — Automation Exercise
 - **URL:** https://www.automationexercise.com/
 - **Objetivo:** validar cadastro de usuário, busca de produtos, adição ao carrinho e checkout.
 
+### API — Trello
+- **URL base:** https://api.trello.com/1
+- **Objetivo:** consultar uma ação Trello e validar o `list.name` retornado.
+
 ---
 
-## 📂 Estrutura final do projeto Web
+## 📂 Estrutura do projeto
 
 ### Arquivos principais
 - **`cypress/e2e/web/AutomationExercise.cy.feature`**
-  - cenário BDD em português para o fluxo completo.
+  - cenário BDD em português para o fluxo completo do site Automation Exercise.
+- **`cypress/e2e/api/trello-action-list.feature`**
+  - cenário BDD para consulta à API Trello e validação do `list.name`.
 - **`cypress/support/step_definitions/AutomationExerciseSteps.js`**
-  - implementa os passos `Given`, `When`, `Then` usados pelo `.feature`.
-- **`cypress/pages/AutomationExercisePage.js`**
-  - Page Object com locators e métodos reutilizáveis para a aplicação.
-- **`cypress/e2e/web/AutomationExercise.cy.js`**
-  - teste Cypress tradicional com o mesmo fluxo, usado como validação adicional.
+  - implementa os passos web `Dado`, `Quando`, `Então` usados pelo `.feature`.
+- **`cypress/support/step_definitions/TrelloSteps.js`**
+  - implementa os passos API `Dado`, `Quando`, `Então` usados pelo `.feature`.
+- **`cypress/support/pages/AutomationExercisePage.js`**
+  - Page Object com locators e métodos reutilizáveis para a aplicação web.
+- **`cypress/support/api - objects/TrelloApiObject.js`**
+  - API object para enviar requisições Trello.
+- **`cypress/fixtures/trello-action.json`**
+  - fixture com dados de teste para o fluxo Trello.
 - **`cypress.config.js`**
-  - configura o Cypress para rodar `.cy.js` e `.feature`, além de registrar o Cucumber preprocessor.
+  - configura o Cypress para rodar `.feature` e registrar o Cucumber preprocessor.
 
 ---
 
@@ -37,8 +50,11 @@ A solução final traz:
 
 1. O arquivo **`.feature`** descreve o cenário de forma legível.
 2. O Cypress usa o plugin **@badeball/cypress-cucumber-preprocessor** para transformar o Gherkin em testes.
-3. O arquivo **`step_definitions/AutomationExerciseSteps.js`** mapeia cada passo para código Cypress.
-4. O Page Object separa os seletores e ações em **`cypress/pages/AutomationExercisePage.js`**.
+3. Os arquivos em **`cypress/support/step_definitions/`** mapeiam cada passo para código Cypress:
+   - **`AutomationExerciseSteps.js`** — passos web
+   - **`TrelloSteps.js`** — passos API
+4. O Page Object separa os seletores e ações em **`cypress/support/pages/AutomationExercisePage.js`**.
+5. O API object encapsula as requisições em **`cypress/support/api - objects/TrelloApiObject.js`**.
 
 ---
 
@@ -49,14 +65,19 @@ A solução final traz:
 npm install
 ```
 
-### Executar o cenário BDD
+### Executar o cenário BDD web
 ```bash
 npx cypress run --spec "cypress/e2e/web/AutomationExercise.cy.feature"
 ```
 
-### Executar o teste tradicional
+### Executar o cenário BDD API
 ```bash
-npx cypress run --spec "cypress/e2e/web/AutomationExercise.cy.js"
+npx cypress run --spec "cypress/e2e/api/trello-action-list.feature"
+```
+
+### Executar web e API juntos
+```bash
+npx cypress run --spec "cypress/e2e/web/AutomationExercise.cy.feature,cypress/e2e/api/trello-action-list.feature"
 ```
 
 ### Executar em modo visual
@@ -66,18 +87,13 @@ npx cypress open
 
 ---
 
-## 📌 Observações importantes
-
-- O arquivo **`.feature`** pode ser usado como documentação e cenário de aceitação.
-- Os **step definitions** devem ser mantidos em `cypress/support/step_definitions/` para o plugin localizar automaticamente.
-- O Page Object melhora a manutenção dos seletores e evita duplicação de código.
-
----
 
 ## ✅ Status atual
 
-- [x] Cucumber/BBD configurado para `.feature`
-- [x] `step_definitions` funcionando
+- [x] BDD/Cucumber configurado para `.feature`
+- [x] `step_definitions` funcionando para web e API
 - [x] Page Object criado para o site Automation Exercise
+- [x] API object criado para consulta a Trello
+- [x] Fixture criado para o teste Trello
 - [x] Execução de teste com sucesso em `AutomationExercise.cy.feature`
-- [x] Execução de teste tradicional em `AutomationExercise.cy.js`
+- [x] Execução de teste com sucesso em `trello-action-list.feature`

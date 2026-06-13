@@ -1,14 +1,14 @@
-import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
-import { AutomationExercisePage } from "../../pages/AutomationExercisePage";
+import { Given as Dado, When as Quando, Then as Entao } from "@badeball/cypress-cucumber-preprocessor";
+import { AutomationExercisePage } from "../pages/AutomationExercisePage";
 
 const page = new AutomationExercisePage();
 const randomSearchTerms = ["Dress", "Tshirt", "Top", "Men", "Jeans", "Shirt"];
 
-Given("que acesso o site {string}", (url) => {
+Dado("que acesso o site {string}", (url) => {
   cy.visit(url);
 });
 
-Given("crio um novo usuário com dados randômicos", () => {
+Dado("crio um novo usuário com dados randômicos", () => {
   const timestamp = Date.now();
   const randomName = `TesteUsuario${timestamp}`;
   const randomEmail = `teste${timestamp}@mailinator.com`;
@@ -37,7 +37,7 @@ Given("crio um novo usuário com dados randômicos", () => {
   page.getSignupContinueButton().click({ force: true });
 });
 
-When("entro na aba {string}", (tabName) => {
+Quando("entro na aba {string}", (tabName) => {
   if (tabName.toLowerCase() === "products") {
     page.getProductsTab().click();
   } else {
@@ -45,14 +45,14 @@ When("entro na aba {string}", (tabName) => {
   }
 });
 
-When("realizo uma busca randômica por produtos", () => {
+Quando("realizo uma busca randômica por produtos", () => {
   const randomTerm = randomSearchTerms[Math.floor(Math.random() * randomSearchTerms.length)];
   page.getSearchInput().clear().type(randomTerm);
   page.getSearchButton().click();
   cy.log(`Busca realizada com termo: ${randomTerm}`);
 });
 
-When("seleciono e adiciono 3 produtos diferentes ao carrinho", () => {
+Quando("seleciono e adiciono 3 produtos diferentes ao carrinho", () => {
   page.getProductCards().should("have.length.at.least", 3).then((cards) => {
     Cypress._.times(3, (index) => {
       cy.wrap(cards)
@@ -67,7 +67,7 @@ When("seleciono e adiciono 3 produtos diferentes ao carrinho", () => {
   });
 });
 
-Then("devo ver os 3 produtos incluídos no carrinho na tela de pagamento", () => {
+Entao("devo ver os 3 produtos incluídos no carrinho na tela de pagamento", () => {
   page.getViewCartButton().click({ force: true });
   cy.url({ timeout: 10000 }).should("include", "/view_cart");
   page.getCartProducts().should("have.length", 3, { timeout: 10000 });

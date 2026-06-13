@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:run": "npx cypress run",
+    "report:generate": "node cucumber-html-report.js",
+    "test:all": "npm run test:run && npm run report:generate"
   },
   "repository": {
     "type": "git",
@@ -22,6 +25,13 @@
     "@badeball/cypress-cucumber-preprocessor": "^24.0.1",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.8",
     "cypress": "^15.17.0",
-    "esbuild": "^0.28.1"
+    "esbuild": "^0.28.1",
+    "multiple-cucumber-html-reporter": "^3.10.0"
+  },
+  "cypress-cucumber-preprocessor": {
+    "json": {
+      "enabled": true,
+      "output": "cypress/reports/cucumber-report.json"
+    }
   }
 }

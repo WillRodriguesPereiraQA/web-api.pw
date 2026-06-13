@@ -19,7 +19,7 @@ module.exports = defineConfig({
   e2e: {
     setupNodeEvents: setupPlugins,
     specPattern: "cypress/e2e/**/*.{cy.js,feature}",
-    stepDefinitions: "cypress/support/step_definitions/AutomationExerciseSteps.js",
+    stepDefinitions: "cypress/support/step_definitions",
     baseUrl: "https://www.automationexercise.com/",
     pageLoadTimeout: 120000,
     defaultCommandTimeout: 15000,

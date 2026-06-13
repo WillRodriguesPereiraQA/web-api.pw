@@ -1,0 +1,133 @@
+[
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "cadastro-e-compra-de-produtos-com-validação-de-carrinho;criar-usuário-com-dados-randômicos,-buscar-produtos-e-validar-itens-no-checkout",
+        "keyword": "Cenário",
+        "line": 5,
+        "name": "Criar usuário com dados randômicos, buscar produtos e validar itens no checkout",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Dado ",
+            "line": 6,
+            "name": "que acesso o site \"https://www.automationexercise.com/\"",
+            "match": {
+              "location": "not available:0"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3453000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "E ",
+            "line": 7,
+            "name": "crio um novo usuário com dados randômicos",
+            "match": {
+              "location": "not available:0"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11265000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Quando ",
+            "line": 8,
+            "name": "entro na aba \"Products\"",
+            "match": {
+              "location": "not available:0"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2020000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "E ",
+            "line": 9,
+            "name": "realizo uma busca randômica por produtos",
+            "match": {
+              "location": "not available:0"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1649000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "E ",
+            "line": 10,
+            "name": "seleciono e adiciono 3 produtos diferentes ao carrinho",
+            "match": {
+              "location": "not available:0"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1005000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Então ",
+            "line": 11,
+            "name": "devo ver os 3 produtos incluídos no carrinho na tela de pagamento",
+            "match": {
+              "location": "not available:0"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2700000000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@web",
+            "line": 2
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "cadastro-e-compra-de-produtos-com-validação-de-carrinho",
+    "line": 3,
+    "keyword": "Funcionalidade",
+    "name": "Cadastro e compra de produtos com validação de carrinho",
+    "tags": [
+      {
+        "name": "@web",
+        "line": 2
+      }
+    ],
+    "uri": "cypress\\e2e\\web\\AutomationExercise.cy.feature"
+  },
+  {
+    "description": "  Como consumidor da API Trello\n  Quero recuperar o nome da lista associada a uma ação\n  Para validar o status e exibir o nome corretamente",
+    "elements": [
+      {
+        "description": "    Dado que uso a API do Trello para obter a ação \"592f11060f95a3d3d46a987a\"\n    Quando envio uma requisição GET para a ação Trello\n    Então devo receber o status code 200 e exibir o nome da lista",
+        "id": "consulta-de-ação-trello;obter-o-nome-da-lista-de-uma-ação-trello",
+        "keyword": "Scenario",
+        "line": 6,
+        "name": "Obter o nome da lista de uma ação Trello",
+        "steps": [],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "consulta-de-ação-trello",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Consulta de ação Trello",
+    "tags": [],
+    "uri": "cypress\\e2e\\api\\trello-action-list.feature"
+  }
+]
