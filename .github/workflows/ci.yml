@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests and generate report
+        run: npm run test:all
+        env:
+          CI: true
+
+      - name: Upload HTML report artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: cucumber-report
+          path: cypress/reports/dashboard
+
+      - name: Upload Pages artifact (for Pages deployment)
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: cypress/reports/dashboard
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v1
