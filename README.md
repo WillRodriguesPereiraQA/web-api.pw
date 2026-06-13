@@ -95,3 +95,7 @@ O relatório será criado na pasta `cypress/reports/dashboard`. Basta abrir o ar
 - [x] Fixture criado para o teste Trello
 - [x] Execução de teste com sucesso em `AutomationExercise.cy.feature`
 - [x] Execução de teste com sucesso em `trello-action-list.feature`
+
+### Evidências
+<img width="1776" height="962" alt="Captura de tela 2026-06-13 105047" src="https://github.com/user-attachments/assets/a3628503-faed-4e63-9653-d6fa7caf9ebd" />
+<img width="1895" height="870" alt="Captura de tela 2026-06-13 105027" src="https://github.com/user-attachments/assets/4580e643-925a-4387-b702-7d58edb5f4d7" />
