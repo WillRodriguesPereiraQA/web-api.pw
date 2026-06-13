@@ -1,66 +1,83 @@
-# 🚀 Projeto de Automação Híbrido (UI e API) com Cypress e BDD
+# 🚀 Automação Web com Cypress + BDD para AutomationExercise
 
-Este projeto é um modelo para testar tanto as telas de um sistema (UI) quanto as rotas de bastidores (API) usando a mesma ferramenta: o **Cypress**. Para facilitar a leitura dos testes, usamos o formato **BDD (Cucumber)**, que permite escrever os cenários em português (Dado, Quando, Então).
+Este projeto automatiza o site de testes **https://www.automationexercise.com/** usando **Cypress** e **BDD/Cucumber**.
 
----
-
-## 📂 Estrutura de Pastas
-
-O projeto está dividido de forma organizada para separar o que é teste de tela e o que é teste de API:
-
-*   **`cypress/e2e/ui/`**: Guarda os testes das telas do sistema (ex: Login, Cadastro).
-*   **`cypress/e2e/api/`**: Guarda os testes das rotas da API (ex: Criar usuário).
-*   **`cypress/fixtures/`**: Guarda arquivos de dados em formato JSON (massa de dados fixa).
-*   **`cypress/support/`**: Guarda comandos criados por você para reaproveitar nos testes.
-*   **`cypress/support/pages/`**: Aqui usei o padrão **Page Object Model (POM)**, onde guardo os locators e as ações de cada página para o código não ficar bagunçado.
----
-
-
-## ❓ Arquivos criados automaticamente (Template Spec)
-
-Ao usar o comando `npx cypress open` e criar uma nova "Spec", o Cypress gera um código padrão de exemplo (com `describe` e `it`). 
-
-**O que fazer:**
-1. Esse código serve apenas para testar se o Cypress está abrindo o navegador.
-2. Como usamos **BDD/Cucumber**, você deve **apagar** esse código automático.
-3. No lugar dele, cole os seus passos de teste (**Step Definitions**) usando `Given`, `When` e `Then`.
+A solução final traz:
+- cenários de teste em **`.feature`**
+- definições de passos em **step definitions**
+- objetos de página em **Page Object Model (POM)**
+- configuração de **Cypress + Cucumber + esbuild** para execução correta
 
 ---
 
-## 🛠️ Como Instalar e Rodar o Projeto
+## 🌐 Site alvo
 
-Se você acabou de baixar este projeto na sua máquina, siga os passos abaixo no terminal:
+- **URL:** https://www.automationexercise.com/
+- **Objetivo:** validar cadastro de usuário, busca de produtos, adição ao carrinho e checkout.
 
-### 1. Instalar as dependências
-Este comando baixa o Cypress e o Cucumber para o seu computador:
+---
+
+## 📂 Estrutura final do projeto Web
+
+### Arquivos principais
+- **`cypress/e2e/web/AutomationExercise.cy.feature`**
+  - cenário BDD em português para o fluxo completo.
+- **`cypress/support/step_definitions/index.js`**
+  - implementa os passos `Given`, `When`, `Then` usados pelo `.feature`.
+- **`cypress/pages/AutomationExercisePage.js`**
+  - Page Object com locators e métodos reutilizáveis para a aplicação.
+- **`cypress/e2e/web/AutomationExercise.cy.js`**
+  - teste Cypress tradicional com o mesmo fluxo, usado como validação adicional.
+- **`cypress.config.js`**
+  - configura o Cypress para rodar `.cy.js` e `.feature`, além de registrar o Cucumber preprocessor.
+
+---
+
+## 🧩 Como funciona a integração BDD
+
+1. O arquivo **`.feature`** descreve o cenário de forma legível.
+2. O Cypress usa o plugin **@badeball/cypress-cucumber-preprocessor** para transformar o Gherkin em testes.
+3. O arquivo **`step_definitions/index.js`** mapeia cada passo para código Cypress.
+4. O Page Object separa os seletores e ações em **`cypress/pages/AutomationExercisePage.js`**.
+
+---
+
+## ⚙️ Como executar
+
+### Instalar dependências
 ```bash
 npm install
 ```
 
-### 2. Abrir a tela visual do Cypress
-Use este comando para abrir o painel do Cypress e escolher qual teste quer ver rodando na tela:
+### Executar o cenário BDD
+```bash
+npx cypress run --spec "cypress/e2e/web/AutomationExercise.cy.feature"
+```
+
+### Executar o teste tradicional
+```bash
+npx cypress run --spec "cypress/e2e/web/AutomationExercise.cy.js"
+```
+
+### Executar em modo visual
 ```bash
 npx cypress open
 ```
 
-### 3. Rodar os testes em modo "Fantasma" (Sem abrir navegador)
-Use este comando para rodar todos os testes direto no terminal de forma rápida:
-```bash
-npx cypress run
-```
+---
+
+## 📌 Observações importantes
+
+- O arquivo **`.feature`** pode ser usado como documentação e cenário de aceitação.
+- Os **step definitions** devem ser mantidos em `cypress/support/step_definitions/` para o plugin localizar automaticamente.
+- O Page Object melhora a manutenção dos seletores e evita duplicação de código.
 
 ---
 
-## 📝 Checklist de Comandos Executados
+## ✅ Status atual
 
-Aqui está a lista de tudo o que foi feito para criar este framework:
-
-### Estrutura Base do Cypress
-- [x] `mkdir meu-projeto-cypress` -> Criou a pasta do projeto.
-- [x] `cd meu-projeto-cypress` -> Entrou na pasta.
-- [x] `npm init -y` -> Iniciou o projeto Node.js.
-- [x] `npm install cypress --save-dev` -> Instalou o Cypress.
-- [x] `npx cypress open` -> Criou as pastas automáticas.
-
-### Instalação do BDD / Cucumber
-- [x] `npm install @badeball/cypress-cucumber-preprocessor @bahmutov/cypress-esbuild-preprocessor esbuild --save-dev` -> Instalou o tradutor de BDD.
+- [x] Cucumber/BBD configurado para `.feature`
+- [x] `step_definitions` funcionando
+- [x] Page Object criado para o site Automation Exercise
+- [x] Execução de teste com sucesso em `AutomationExercise.cy.feature`
+- [x] Execução de teste tradicional em `AutomationExercise.cy.js`
