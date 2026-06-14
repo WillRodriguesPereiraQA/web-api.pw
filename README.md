@@ -120,69 +120,22 @@ O relatório será criado na pasta `cypress/reports/dashboard`. Basta abrir o ar
 
 ---
 
-## 🧹 Qualidade do código
-
-### Scripts Disponíveis
-
-| Script                 | Descrição                                |
-| ---------------------- | ---------------------------------------- |
-| `npm test`             | Executa todos os testes e gera relatório |
-| `npm run test:all`     | Testes + Relatório HTML                  |
-| `npm run test:run`     | Apenas executa testes (headless)         |
-| `npm run test:web`     | Testes web (`.feature`) apenas           |
-| `npm run test:api`     | Testes API (`.cy.js`) apenas             |
-| `npm run test:watch`   | Abre Cypress interativo                  |
-| `npm run lint`         | Verifica erros ESLint                    |
-| `npm run lint:fix`     | Corrige erros ESLint automaticamente     |
-| `npm run format`       | Formata código com Prettier              |
-| `npm run format:check` | Verifica formatação sem alterar          |
-
-### Padrões Implementados
-
-- ✅ **ESLint**: `eslint:recommended` + `plugin:cypress/recommended` + `prettier`
-- ✅ **Prettier**: Formatação automática de código
-- ✅ **Commitlint**: Valida commits em formato Conventional Commits
-- ✅ **Husky**: Git hooks automáticos (lint + format antes de commit)
-
-### Pré-commit Hooks
-
-Toda vez que você faz commit, os hooks executam automaticamente:
-
-```bash
-npm run lint:fix    # Corrige ESLint
-npm run format      # Formata código
-npx commitlint      # Valida mensagem de commit
-```
-
----
-
-## 🧹 Qualidade do código
-
-## 🔧 Configurar URLs (web / api)
-
 ### Separação de Ambientes
 
 O projeto segue o padrão de **separação de ambientes** usando variáveis de ambiente:
 
-1. **Copie o arquivo de exemplo:**
+**Configurção das variáveis** no arquivo `.env`:
 
-   ```bash
-   cp .env.example .env
-   ```
+```env
+# Ambiente Web
+WEB_BASE_URL=https://www.automationexercise.com/
 
-2. **Configure as variáveis** no arquivo `.env`:
+# Ambiente API
+API_BASE_URL=https://api.trello.com/1
+```
 
-   ```env
-   # Ambiente Web
-   WEB_BASE_URL=https://www.automationexercise.com/
-
-   # Ambiente API
-   API_BASE_URL=https://api.trello.com/1
-   ```
-
-3. **Use nos testes:**
-   - Testes web leem de `Cypress.env('webBaseUrl')`
-   - Testes API leem de `Cypress.env('apiBaseUrl')`
+- Testes web leem de `Cypress.env('webBaseUrl')`
+- Testes API leem de `Cypress.env('apiBaseUrl')`
 
 ### Ambientes Suportados
 
@@ -196,22 +149,7 @@ O projeto segue o padrão de **separação de ambientes** usando variáveis de a
 
 ### Workflow Automático
 
-O arquivo **`.github/workflows/ci.yml`** executa automaticamente:
-
-1. **Na cada push** para `main` ou `master`
-2. **Em pull requests** (PRs)
-
-**Etapas do Pipeline:**
-
-- ✅ **Checkout** do código
-- ✅ **Setup Node.js 18+**
-- ✅ **Instalação** de dependências (`npm ci`)
-- ✅ **Execução** de testes (`npm run test:all`)
-- ✅ **Geração** do relatório HTML
-- ✅ **Upload** do artefato
-- ✅ **Deploy** automático para GitHub Pages
-
-### Acessar Relatório
+**`.github/workflows/ci.yml`**
 
 O relatório é publicado automaticamente no **GitHub Pages**:
 
@@ -232,57 +170,3 @@ O relatório é publicado automaticamente no **GitHub Pages**:
 - [x] Execução de teste API com sucesso em `trello-action-list.cy.js`
 
 ---
-
-## 📋 Padrões do Projeto
-
-### 1️⃣ Separação de Ambientes
-
-- **Variáveis de ambiente** centralizadas em `.env.example`
-- **Diferentes URLs** para web, API, staging, produção
-- **Sem secrets** commitados no repositório
-
-### 2️⃣ CI/CD (GitHub Actions)
-
-- **Workflow automático** para cada push/PR
-- **Testes executados** em ambiente Ubuntu
-- **Relatório HTML** publicado em GitHub Pages
-- **Artifacts** salvos para download
-
-### 3️⃣ Validações Robustas de API
-
-- **6 testes abrangentes**: sucesso, erro, performance
-- **Schema validation**: verifica estrutura de dados
-- **Type validation**: confirma tipos corretos
-- **Error handling**: testa 404 e IDs vazios
-- **Performance check**: resposta < 3 segundos
-
-### 4️⃣ Padronização do Projeto
-
-- **package.json** com descrição clara, keywords, engines
-- **Scripts bem organizados** (test, lint, format, etc)
-- **Commits Conventional** (commitlint valida)
-- **Código formatado** (Prettier + ESLint)
-- **Pre-commit hooks** (Husky automático)
-
----
-
-## 📚 Dependências
-
-- **Cypress 15.17.0**: Automação de testes
-- **Cucumber 24.0.1**: BDD para testes web
-- **esbuild 0.28.1**: Bundler para `.feature`
-- **ESLint 8.56.0**: Qualidade de código
-- **Prettier 3.1.1**: Formatação automática
-- **Commitlint 18.6.0**: Validação de commits
-- **Husky 8.0.3**: Git hooks
-
----
-
-## 🎯 Próximas Melhorias (Roadmap)
-
-- [ ] Adicionar testes de autenticação na API
-- [ ] Integrar com ferramentas de teste de carga
-- [ ] Adicionar testes de performance avançados
-- [ ] Implementar testes visuais (visual regression)
-- [ ] Expandir cobertura de testes de web
-- [ ] Integração com Slack/teams para notificações
