@@ -23,7 +23,7 @@ A solução traz:
 ### API — Trello
 
 - **URL base:** https://api.trello.com/1
-- **Objetivo:** consultar uma ação Trello e validar o `list.name` retornado.
+- **Objetivo:** testar a consulta de uma ação Trello com validação de schema, dados, erros e performance.
 
 ---
 
@@ -46,6 +46,46 @@ A solução traz:
 2. Os arquivos em **`cypress/support/step_definitions/`** mapeiam cada passo para código Cypress:
    - **`TrelloSteps.js`** — passos API
 3. O API object encapsula as requisições em **`cypress/support/api - objects/TrelloApiObject.js`**.
+
+---
+
+## 🧪 Cenários de teste da API Trello
+
+O arquivo **`cypress/e2e/api/trello-action-list.cy.js`** contém 6 testes que cobrem:
+
+### ✅ Sucesso (3 testes)
+
+1. **Retorna 200 com a ação completa**
+   - Verifica se a resposta tem status 200
+   - Valida se `response.body.data.list` existe
+   - Confirma que `list.id` e `list.name` vêm preenchidos
+   - Valida o tempo de resposta (< 3 segundos)
+
+2. **Valida tipos de dados**
+   - Confirma que `list.id` e `list.name` são strings não-vazias
+   - Garante a integridade dos dados retornados
+
+3. **Confirma o nome da lista esperada**
+   - Verifica se `list.name` corresponde ao valor do fixture
+   - Assegura que os dados retornados estão corretos
+
+### ⚠️ Erro (2 testes)
+
+4. **Retorna erro 404 para action ID inválido**
+   - Tenta consultar um ID que não existe
+   - Valida que a API retorna status de erro (404, 400 ou 401)
+
+5. **Trata ID vazio corretamente**
+   - Envia um ID vazio para a API
+   - Confirma que a API retorna um status de erro
+
+### ⏱️ Performance (1 teste)
+
+6. **Responde dentro do tempo limite**
+   - Verifica se a resposta chega em menos de 3 segundos
+   - Garante que a API tem boa performance
+
+---
 
 ---
 
