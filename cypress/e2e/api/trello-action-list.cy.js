@@ -1,42 +1,42 @@
 import { TrelloApi } from '../../support/api_objects/TrelloApiObject';
+import {
+  assertErrorResponse,
+  assertRequiredFields,
+  assertStringFields,
+  assertSuccessResponse,
+  validateJsonSchema,
+} from '../../support/helpers/apiValidator';
+import trelloActionSchema from '../../support/schemas/trello-action.schema.json';
 
 describe('Trello Action API', () => {
-  const MAX_RESPONSE_TIME = 3000; // 3 segundos
+  const MAX_RESPONSE_TIME = 3000;
+
+  beforeEach(() => {
+    cy.log(`Ambiente: ${Cypress.env('environment')} | API: ${Cypress.env('apiBaseUrl')}`);
+  });
 
   describe('GET /actions/{actionId} - Sucesso', () => {
     it('should return 200 with complete action object', () => {
       cy.fixture('trello-action').then((data) => {
-        const startTime = Date.now();
-
         new TrelloApi().getAction(data.actionId).then((response) => {
-          const responseTime = Date.now() - startTime;
+          assertSuccessResponse(response, {
+            expectedStatus: 200,
+            maxDurationMs: MAX_RESPONSE_TIME,
+          });
 
-          // Status code
-          expect(response.status).to.eq(200);
+          validateJsonSchema(trelloActionSchema, response.body);
 
-          // Response time validation
-          expect(responseTime).to.be.lessThan(MAX_RESPONSE_TIME);
-          cy.log(`Tempo de resposta: ${responseTime}ms`);
-
-          // Required top-level fields
-          expect(response.body).to.have.property('data');
           const actionData = response.body.data;
-
-          expect(actionData).to.be.an('object');
-
-          // List object validation (required fields from Trello API)
-          expect(actionData).to.have.property('list').and.be.an('object');
-          expect(actionData.list).to.have.property('id').and.be.a('string');
-          expect(actionData.list).to.have.property('name').and.be.a('string');
+          assertRequiredFields(actionData, ['list']);
+          assertRequiredFields(actionData.list, ['id', 'name']);
           expect(actionData.list.name).to.eq(data.expectedListName);
 
-          // Board object validation (if present)
           if (actionData.board) {
-            expect(actionData.board).to.be.an('object');
-            expect(actionData.board).to.have.property('id').and.be.a('string');
+            assertRequiredFields(actionData.board, ['id']);
+            assertStringFields(actionData.board, ['id']);
           }
 
-          cy.log(`✓ Lista encontrada: ${actionData.list.name}`);
+          cy.log(`Lista encontrada: ${actionData.list.name}`);
         });
       });
     });
@@ -44,14 +44,13 @@ describe('Trello Action API', () => {
     it('should have valid data types in response', () => {
       cy.fixture('trello-action').then((data) => {
         new TrelloApi().getAction(data.actionId).then((response) => {
-          const actionData = response.body.data;
+          assertSuccessResponse(response);
 
-          // Validate required list fields exist and have correct types
-          expect(actionData.list).to.exist;
-          expect(actionData.list.id).to.be.a('string').and.not.empty;
-          expect(actionData.list.name).to.be.a('string').and.not.empty;
+          const { list } = response.body.data;
+          assertStringFields(list, ['id', 'name']);
+          expect(list.id).to.match(/^[a-f0-9]{24}$/i);
 
-          cy.log('✓ Todos os campos obrigatórios possuem tipos válidos');
+          cy.log('Campos obrigatórios possuem tipos válidos');
         });
       });
     });
@@ -59,13 +58,13 @@ describe('Trello Action API', () => {
     it('should have consistent list name value', () => {
       cy.fixture('trello-action').then((data) => {
         new TrelloApi().getAction(data.actionId).then((response) => {
-          const actionData = response.body.data;
+          assertSuccessResponse(response);
 
-          // Validate list name matches expected value
-          expect(actionData.list.name).to.equal(data.expectedListName);
-          expect(actionData.list.id).to.not.be.empty;
+          const { list } = response.body.data;
+          expect(list.name).to.equal(data.expectedListName);
+          expect(list.id).to.not.be.empty;
 
-          cy.log(`✓ Lista validada: ID=${actionData.list.id}, Nome=${actionData.list.name}`);
+          cy.log(`Lista validada: ID=${list.id}, Nome=${list.name}`);
         });
       });
     });
@@ -76,17 +75,22 @@ describe('Trello Action API', () => {
       const invalidActionId = 'invalid_action_id_12345';
 
       new TrelloApi().getAction(invalidActionId).then((response) => {
-        // Trello API typically returns 404 or error status for invalid IDs
-        expect(response.status).to.be.oneOf([404, 400, 401]);
-        cy.log(`✓ Status de erro apropriado recebido: ${response.status}`);
+        assertErrorResponse(response, { allowedStatuses: [400, 401, 404] });
+        cy.log(`Status de erro recebido: ${response.status}`);
       });
     });
 
     it('should handle empty action ID gracefully', () => {
       new TrelloApi().getAction('').then((response) => {
-        // Should return an error status
-        expect(response.status).to.be.at.least(400);
-        cy.log(`✓ ID vazio tratado: ${response.status}`);
+        assertErrorResponse(response, { minStatus: 400 });
+        cy.log(`ID vazio tratado: ${response.status}`);
+      });
+    });
+
+    it('should reject malformed action ID', () => {
+      new TrelloApi().getAction('not-a-valid-object-id').then((response) => {
+        assertErrorResponse(response, { allowedStatuses: [400, 401, 404] });
+        cy.log(`ID malformado tratado: ${response.status}`);
       });
     });
   });
@@ -94,12 +98,9 @@ describe('Trello Action API', () => {
   describe('GET /actions/{actionId} - Performance', () => {
     it('should respond within acceptable time limit', () => {
       cy.fixture('trello-action').then((data) => {
-        const startTime = Date.now();
-
-        new TrelloApi().getAction(data.actionId).then(() => {
-          const responseTime = Date.now() - startTime;
-          expect(responseTime).to.be.lessThan(MAX_RESPONSE_TIME);
-          cy.log(`✓ Tempo de resposta: ${responseTime}ms`);
+        new TrelloApi().getAction(data.actionId).then((response) => {
+          assertSuccessResponse(response, { maxDurationMs: MAX_RESPONSE_TIME });
+          cy.log(`Tempo de resposta: ${response.duration}ms`);
         });
       });
     });

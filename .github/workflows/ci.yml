@@ -2,16 +2,28 @@ name: CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
+env:
+  CYPRESS_ENV: ci
+  WEB_BASE_URL: https://www.automationexercise.com/
+  API_BASE_URL: https://api.trello.com/1
+  CI: true
+
 jobs:
-  build:
+  quality:
+    name: Code Quality
     runs-on: ubuntu-latest
 
     steps:
@@ -22,30 +34,62 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
+
+  test:
+    name: E2E Tests
+    needs: quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
 
       - name: Run tests and generate report
         run: npm run test:all
-        env:
-          CI: true
 
       - name: Upload HTML report artifact
-        uses: actions/upload-artifact@v3
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: cucumber-report
+          name: cucumber-report-${{ github.run_number }}
           path: cypress/reports/dashboard
+          retention-days: 14
 
-      - name: Upload Pages artifact (for Pages deployment)
-        uses: actions/upload-pages-artifact@v1
+      - name: Upload Pages artifact
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        uses: actions/upload-pages-artifact@v3
         with:
           path: cypress/reports/dashboard
 
   deploy:
-    needs: build
+    name: Deploy Report
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    needs: test
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+        id: deployment
+        uses: actions/deploy-pages@v4
