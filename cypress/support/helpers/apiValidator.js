@@ -1,8 +1,13 @@
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
+import trelloActionSchema from '../schemas/trello-action.schema.json';
 
 const ajv = new Ajv({ allErrors: true, strict: false });
 addFormats(ajv);
+
+const contractRegistry = {
+  'trello-action-success': trelloActionSchema,
+};
 
 export function validateJsonSchema(schema, data) {
   const validate = ajv.compile(schema);
@@ -14,6 +19,25 @@ export function validateJsonSchema(schema, data) {
   }
 
   return true;
+}
+
+export function validateApiContract(contractId, data) {
+  const schema = contractRegistry[contractId];
+
+  if (!schema) {
+    throw new Error(`Contrato não registrado: ${contractId}`);
+  }
+
+  validateJsonSchema(schema, data);
+  return true;
+}
+
+export function assertApiMatchesSimulatedDb(apiBody, dbRow) {
+  expect(apiBody.data.list.name).to.eq(dbRow.list_name);
+
+  if (dbRow.action_id) {
+    expect(dbRow.action_id).to.be.a('string').and.not.empty;
+  }
 }
 
 export function assertJsonContentType(response) {

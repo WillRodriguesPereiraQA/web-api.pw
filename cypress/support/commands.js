@@ -35,3 +35,7 @@ Cypress.Commands.add('visitAutomationExercise', (url) => {
 
   visitWithRetry();
 });
+
+Cypress.Commands.add('simulateSql', (query, params = []) => {
+  return cy.task('simulateSql', { query, params });
+});

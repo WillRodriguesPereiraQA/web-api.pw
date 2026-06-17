@@ -50,43 +50,59 @@ A solução traz:
 
 ## 🧪 Cenários de teste da API Trello
 
-O arquivo **`cypress/e2e/api/trello-action-list.cy.js`** contém 6 testes que cobrem:
+O arquivo **`cypress/e2e/api/trello-action-list.cy.js`** contém **8 testes** que cobrem:
 
-### ✅ Sucesso (3 testes)
+### ✅ Sucesso (4 testes)
 
 1. **Retorna 200 com a ação completa**
-   - Verifica se a resposta tem status 200
-   - Valida se `response.body.data.list` existe
-   - Confirma que `list.id` e `list.name` vêm preenchidos
-   - Valida o tempo de resposta (< 3 segundos)
+   - Verifica status 200 e estrutura da resposta
+   - Valida o **contrato JSON (AJV)**
+   - Cruza os dados com o **SQL simulado** via `cy.task`
 
 2. **Valida tipos de dados**
-   - Confirma que `list.id` e `list.name` são strings não-vazias
-   - Garante a integridade dos dados retornados
+   - Confirma tipos corretos em `list.id` e `list.name`
+   - Valida o contrato AJV da resposta
 
-3. **Confirma o nome da lista esperada**
-   - Verifica se `list.name` corresponde ao valor do fixture
-   - Assegura que os dados retornados estão corretos
+3. **Confere registro no banco simulado**
+   - Executa SQL simulado com `cy.simulateSql()`
+   - Compara o retorno da API com o que o "banco" retornaria
 
-### ⚠️ Erro (2 testes)
+4. **Confirma o nome da lista esperada**
+   - Verifica se `list.name` bate com o fixture e o contrato
 
-4. **Retorna erro 404 para action ID inválido**
-   - Tenta consultar um ID que não existe
-   - Valida que a API retorna status de erro (404, 400 ou 401)
+### ⚠️ Erro (3 testes)
 
-5. **Trata ID vazio corretamente**
-   - Envia um ID vazio para a API
-   - Confirma que a API retorna um status de erro
+5. **Retorna erro para action ID inválido**
+   - SQL simulado retorna zero registros
+   - API retorna status de erro (400, 401 ou 404)
+
+6. **Trata ID vazio corretamente**
+   - Confirma que a API retorna status de erro
+
+7. **Rejeita ID malformado**
+   - Confirma que a API trata ID inválido com erro
 
 ### ⏱️ Performance (1 teste)
 
-6. **Responde dentro do tempo limite**
-   - Verifica se a resposta chega em menos de 3 segundos
-   - Garante que a API tem boa performance
+8. **Responde dentro do tempo limite**
+   - Verifica resposta em menos de 3 segundos
+   - Valida o contrato AJV da resposta
 
 ---
 
+## 📋 Validação de contrato (AJV)
+
+- A função **`validateApiContract()`** em **`cypress/support/helpers/apiValidator.js`** valida a presença dos campos obrigatórios (`data`, `list`, `id`, `name`) na estrutura da resposta da API contra o **contrato JSON `cypress/support/schemas/trello-action.schema.json`**
+
 ---
+
+## 🗄️ SQL
+
+Criei uma `cy.task`, com um **SQL simulado** usando **`cy.simulateSql`** para validar se a API retorna o que o banco teria armazenado
+
+```sql
+SELECT action_id, list_name, status FROM trello_actions WHERE action_id = ?
+```
 
 ## ⚙️ Como executar
 
@@ -168,9 +184,12 @@ O relatório é publicado automaticamente no **GitHub Pages**:
 - [x] Fixture criado para o teste Trello
 - [x] Execução de teste web com sucesso em `AutomationExercise.feature`
 - [x] Execução de teste API com sucesso em `trello-action-list.cy.js`
+- [x] Validação de contrato JSON com AJV
+- [x] SQL simulado via `cy.task` para cruzar API com banco simulado
 
 ---
+
 ## Evidências
+
 <img width="1888" height="950" alt="Captura de tela 2026-06-14 174936" src="https://github.com/user-attachments/assets/9cabb40b-a0dd-41f7-a5b2-704c1eb4fcd6" />
 <img width="1892" height="865" alt="Captura de tela 2026-06-14 175123" src="https://github.com/user-attachments/assets/b457405c-a14c-4b86-98f9-ca1ab805519c" />
-

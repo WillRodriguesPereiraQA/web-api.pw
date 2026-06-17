@@ -6,6 +6,7 @@ const createBundler = require('@bahmutov/cypress-esbuild-preprocessor');
 const { createEsbuildPlugin } = require('@badeball/cypress-cucumber-preprocessor/esbuild');
 const { getEnvironmentConfig } = require('./cypress/config/environments');
 const { writeApiResultsAsCucumberJson } = require('./scripts/api-results-to-cucumber');
+const { registerSimulatedDbTasks } = require('./cypress/plugins/simulatedDb');
 
 const environmentName = process.env.CYPRESS_ENV || 'dev';
 const { webBaseUrl, apiBaseUrl } = getEnvironmentConfig(environmentName);
@@ -18,6 +19,8 @@ async function setupPlugins(on, config) {
   });
 
   on('file:preprocessor', bundler);
+
+  registerSimulatedDbTasks(on);
 
   on('after:run', (results) => {
     writeApiResultsAsCucumberJson(results);
